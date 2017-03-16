@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
 using EF.DatabaseContext;
 using Dapper;
 using EF.Models;
@@ -15,22 +13,41 @@ namespace EF
     {
         static void Main(string[] args)
         {
-            var connectionString = ConfigurationManager.ConnectionStrings["OracleConnection"].ConnectionString;
-            var db = new OracleConnection(connectionString);
-            //var db =new OracleContext();
             try
             {
-                var list = db.Query<AlertQt>("select * from ALERT_QT");
-                //var list = db.AlertQt.ToList();
-                foreach (var item in list)
+                switch (ConfigurationManager.AppSettings["config"])
                 {
-                    Console.WriteLine($"MsgId={item.MsgId};Qname={item.Qname};Expiration={item.Expiration}");
+                    case "0":
+                        {
+                            var connectionString = ConfigurationManager.ConnectionStrings["OracleConnection"].ConnectionString;
+                            var db = new OracleConnection(connectionString);
+                            var query = db.Query<ALERT_QT>("select MSGID,Q_NAME,EXPIRATION from ALERT_QT");
+                            foreach (var item in query)
+                            {
+                                Console.WriteLine($"MsgId={item.MSGID[0]};Qname={item.Q_NAME};Expiration={item.EXPIRATION}");
+                            }
+                        }
+                        break;
+                    case "1":
+                        {
+                            var db = new OracleContext();
+                            var query = db.AlertQt;
+                            foreach (var item in query)
+                            {
+                                Console.WriteLine($"MsgId={item.MsgId[0]};Qname={item.Qname};Expiration={item.Expiration}");
+                            }
+                        }
+                        break;
+                    default:
+                        {
+                            Console.WriteLine("default...");
+                        }
+                        break;
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                throw;
             }
             Console.WriteLine("EF");
             Console.ReadLine();

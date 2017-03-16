@@ -14,8 +14,8 @@ namespace EF.Models
         [Column("Q_NAME")]
         public string Qname { get; set; }
         [Key, Column("MSGID")]
-        public string MsgId { get; set; }
-        [Key, Column("EXPIRATION")]
-        public long? Expiration { get; set; }
+        public byte[] MsgId { get; set; }
+        [Column("EXPIRATION")]
+        public string Expiration { get; set; }
     }
 }
