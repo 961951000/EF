@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using EF.DatabaseContext;
+using Dapper;
+using EF.Models;
+using Oracle.ManagedDataAccess.Client;
 
 namespace EF
 {
@@ -11,13 +15,16 @@ namespace EF
     {
         static void Main(string[] args)
         {
-            var db = new MySqlContext();
+            var connectionString = ConfigurationManager.ConnectionStrings["OracleConnection"].ConnectionString;
+            var db = new OracleConnection(connectionString);
+            //var db =new OracleContext();
             try
             {
-                var list = db.ProxiesPriv.ToList();
+                var list = db.Query<AlertQt>("select * from ALERT_QT");
+                //var list = db.AlertQt.ToList();
                 foreach (var item in list)
                 {
-                    Console.WriteLine($"Host={item.Host}");
+                    Console.WriteLine($"MsgId={item.MsgId};Qname={item.Qname};Expiration={item.Expiration}");
                 }
             }
             catch (Exception e)
