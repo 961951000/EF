@@ -10,7 +10,7 @@ namespace EF.DatabaseContext
 {
     public class OracleContext : DbContext
     {
-        public OracleContext() : base("name=DefaultConnection") { }
+        public OracleContext() : base("name=OracleConnection") { }
 
         public DbSet<AlertQt> AlertQt { get; set; }
 
